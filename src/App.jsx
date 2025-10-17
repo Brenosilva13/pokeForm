@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <div>
-        <h1>Welcome to the Pokémon App</h1>
+        <h1>Pokédex</h1>
         <Forms />
       </div>
     
