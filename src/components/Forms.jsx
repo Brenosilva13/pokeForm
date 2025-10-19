@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Forms.css'; 
 
-const Forms = () => {
+const Forms = ({ adicionarPokemon }) => {
     const [name, setName] = useState("");
     const [type, setType] = useState("");
     const [description, setDescription] = useState("");
@@ -19,6 +19,9 @@ const Forms = () => {
             }, 3000);
             return;
         }
+
+        const pokemonNovo = { name, type, description, power };
+        adicionarPokemon(pokemonNovo);
 
         console.log("Pokémon cadastrado:", { name, type, description, power });
 
