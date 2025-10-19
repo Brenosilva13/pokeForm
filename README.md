@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # pokeForm
 =======
 # React + Vite
