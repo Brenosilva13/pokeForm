@@ -3,32 +3,40 @@ import './Forms.css';
 
 const Forms = ({ adicionarPokemon }) => {
     const [name, setName] = useState("");
-    const [type, setType] = useState("");
+    const [types, setTypes] = useState([]);
     const [description, setDescription] = useState("");
     const [power, setPower] = useState(0);
 
     const [submissionStatus, setSubmissionStatus] = useState(null);
 
+    const handleTypeChange = (selectedType) => {
+        if (types.includes(selectedType)) {
+            setTypes(types.filter(type => type !== selectedType));
+        } else if (types.length < 2) {
+            setTypes([...types, selectedType]);
+        }
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (!name || !type) {
-            setSubmissionStatus({ message: 'Por favor, preencha o Nome e o Tipo.', type: 'error' });
+        if (!name || types.length === 0) {
+            setSubmissionStatus({ message: 'Por favor, preencha o Nome e pelo menos um Tipo.', type: 'error' });
             setTimeout(() => {
                 setSubmissionStatus(null);
             }, 3000);
             return;
         }
 
-        const pokemonNovo = { name, type, description, power };
+        const pokemonNovo = { name, types, description, power };
         adicionarPokemon(pokemonNovo);
 
-        console.log("Pokémon cadastrado:", { name, type, description, power });
+        console.log("Pokémon cadastrado:", { name, types, description, power });
 
-        setSubmissionStatus({ message: `Pokémon ${name} cadastrado! 🙌`, type: 'success' });
+        setSubmissionStatus({ message: `Pokémon ${name} cadastrado!`, type: 'success' });
 
         setName("");
-        setType("");
+        setTypes([]);
         setDescription("");
         setPower(0);
 
@@ -53,22 +61,39 @@ const Forms = ({ adicionarPokemon }) => {
                 />
                 <br />
 
-                <label htmlFor="pokemon-type"> Tipo</label>
-                <select
-                    id="pokemon-type"
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                    required
-                >
-                    <option value="" disabled>Selecione um tipo...</option>
-                    <option value="Fogo">🔥 Fogo</option>
-                    <option value="Água">💧 Água</option>
-                    <option value="Grama">🌱 Grama</option>
-                    <option value="Elétrico">⚡ Elétrico</option>
-                    <option value="Psíquico">🧠 Psíquico</option>
-                    <option value="Pedra">🪨 Pedra</option>
-                    <option value="Dragão">🐉 Dragão</option>
-                </select>
+                <label htmlFor="pokemon-types">Tipos (máximo 2)</label>
+                <div className="types-container">
+                    {[
+                        { value: "Fogo", emoji: "🔥", label: "Fogo" },
+                        { value: "Água", emoji: "💧", label: "Água" },
+                        { value: "Grama", emoji: "🌱", label: "Grama" },
+                        { value: "Elétrico", emoji: "⚡", label: "Elétrico" },
+                        { value: "Psíquico", emoji: "🧠", label: "Psíquico" },
+                        { value: "Pedra", emoji: "🪨", label: "Pedra" },
+                        { value: "Dragão", emoji: "🐉", label: "Dragão" },
+                        { value: "Voador", emoji: "🕊️", label: "Voador" },
+                        { value: "Lutador", emoji: "👊", label: "Lutador" },
+                        { value: "Venenoso", emoji: "☠️", label: "Venenoso" }
+                    ].map(typeOption => (
+                        <label key={typeOption.value} className="type-option">
+                            <input
+                                type="checkbox"
+                                value={typeOption.value}
+                                checked={types.includes(typeOption.value)}
+                                onChange={() => handleTypeChange(typeOption.value)}
+                                disabled={!types.includes(typeOption.value) && types.length >= 2}
+                            />
+                            <span className="type-label">
+                                {typeOption.emoji} {typeOption.label}
+                            </span>
+                        </label>
+                    ))}
+                </div>
+                {types.length > 0 && (
+                    <div className="selected-types">
+                        <strong>Tipos selecionados:</strong> {types.join(", ")}
+                    </div>
+                )}
                 <br />
                 <label htmlFor="pokemon-description">Descrição</label>
                 <textarea
